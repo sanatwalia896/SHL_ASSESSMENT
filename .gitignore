@@ -220,3 +220,4 @@ __marimo__/
 data/artifacts/faiss.index.fastembed_cache/
 .fastembed_cache/
 data/artifacts/faiss.index
+gcp-sa-key.json
