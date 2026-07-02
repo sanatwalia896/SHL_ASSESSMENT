@@ -15,7 +15,8 @@ class VectorStore:
         settings = get_settings()
 
         self.embedding_model = TextEmbedding(
-            model_name=settings.embedding_model
+            model_name=settings.embedding_model,
+            cache_dir=settings.fastembed_cache_dir
         )
 
         with open(settings.embedding_documents_path, "r", encoding="utf-8") as f:

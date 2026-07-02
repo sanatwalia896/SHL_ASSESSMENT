@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     embedding_documents_path: Path = artifacts_dir / "embedding_documents.json"
     synonym_index_path: Path = artifacts_dir / "synonym_index.json"
     faiss_index_path: Path = artifacts_dir / "faiss.index"
+    fastembed_cache_dir: str = ".fastembed_cache"
 
     max_recommendations: int = 5
     faiss_top_k: int = 20
