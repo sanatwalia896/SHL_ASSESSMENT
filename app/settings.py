@@ -11,7 +11,7 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    groq_api_key: str
+    groq_api_key: str=""
     groq_model: str = "openai/gpt-oss-120b"
 
     embedding_model: str = "BAAI/bge-small-en-v1.5"
