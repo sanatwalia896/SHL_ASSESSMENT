@@ -54,6 +54,8 @@ class QueryPlan(BaseModel):
 
     must_include: list[str] = Field(default_factory=list)
     must_exclude: list[str] = Field(default_factory=list)
+    solution_signals: list[str] = Field(default_factory=list)
+    negative_signals: list[str] = Field(default_factory=list)
 
     needs_clarification: bool = False
     clarification_question: str = ""

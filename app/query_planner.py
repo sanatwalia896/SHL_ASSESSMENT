@@ -28,7 +28,11 @@ def compact_history(messages: list[Message], max_messages: int = 6) -> str:
 class QueryPlanner:
     def __init__(self) -> None:
         self.settings = get_settings()
-        self.client = Groq(api_key=self.settings.groq_api_key) if self.settings.groq_api_key else None
+        if self.settings.groq_api_key:
+            self.client = Groq(api_key=self.settings.groq_api_key)
+        else:
+            self.client = None
+            print("⚠️  GROQ_API_KEY not found. Using fallback responder.")
 
     def plan(self, messages: list[Message]) -> QueryPlan:
         user_text = latest_user_message(messages)
@@ -100,6 +104,34 @@ Rules:
 - If the user asks difference between assessments, set intent="compare".
 - If the user says thanks/confirmed/that works, set intent="confirm".
 - For unsupported technologies, keep the exact technology in direct_keywords and put adjacent skills in related_keywords.
+Important multi-turn rule:
+Build the query plan from the entire conversation history, not only the latest user message.
+
+The latest user message decides the action, but persistent role requirements from previous user turns must remain in the query plan.
+
+Examples:
+- If earlier turns mention HIPAA, patient records, healthcare admin, Spanish, and the latest user says "Go with the hybrid", keep HIPAA, Medical Terminology, Microsoft Word, DSI, OPQ32r, healthcare admin, Spanish, and English written work as retrieval signals.
+- If earlier turns mention Java, Spring, SQL, and the latest user says "Add AWS and Docker. Drop REST", keep Java, Spring, SQL, AWS, Docker and put REST in must_exclude.
+- If earlier turns mention Excel and Word and the latest user says "Add simulation", keep Excel, Word, Microsoft Excel, Microsoft Word and add simulation.
+- If earlier turns mention sales organization reskilling or talent audit, keep skills assessment, development report, OPQ, OPQ MQ Sales Report, and Sales Transformation signals.
+
+Do not set intent="confirm" merely because the user chooses an option such as "go with hybrid" or "add simulation".
+Use intent="confirm" only when the user clearly finalizes the shortlist, such as:
+"confirmed", "that works", "lock it in", "final list", "thanks".
+
+Output schema:
+{
+  "intent": "...",
+  "direct_keywords": [...],
+  "related_keywords": [...],
+  "semantic_query": "...",
+  "must_include": [...],
+  "must_exclude": [...],
+  "solution_signals": [...],
+  "negative_signals": [...],
+  "needs_clarification": false,
+  "clarification_question": ""
+}
 
 Examples:
 

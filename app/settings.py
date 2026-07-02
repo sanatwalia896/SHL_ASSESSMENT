@@ -12,7 +12,7 @@ class Settings(BaseSettings):
     )
 
     groq_api_key: str
-    groq_model: str = "llama-3.1-8b-instant"
+    groq_model: str = "openai/gpt-oss-120b"
 
     embedding_model: str = "BAAI/bge-small-en-v1.5"
 
