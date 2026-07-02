@@ -218,3 +218,5 @@ __marimo__/
 .streamlit/secrets.toml
 
 data/artifacts/faiss.index.fastembed_cache/
+.fastembed_cache/
+data/artifacts/faiss.index
