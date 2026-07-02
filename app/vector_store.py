@@ -24,7 +24,7 @@ class VectorStore:
         self.texts = [doc["text"] for doc in self.documents]
         self.ids = [str(doc["id"]) for doc in self.documents]
 
-        self.index_path = settings.data_dir / "faiss.index"
+        self.index_path = settings.faiss_index_path
 
         if self.index_path.exists():
             print("Loading FAISS index from disk...")

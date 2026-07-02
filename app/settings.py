@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from functools import lru_cache
 from pathlib import Path
 
@@ -13,26 +11,20 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    groq_api_key: str = ""
+    groq_api_key: str
     groq_model: str = "llama-3.1-8b-instant"
+
     embedding_model: str = "BAAI/bge-small-en-v1.5"
 
     app_root: Path = Path(__file__).resolve().parents[1]
-
     data_dir: Path = app_root / "data"
-    data_dir: Path = app_root / "data"
-
-    raw_catalog_path: Path = data_dir / "raw" / "assessment_catalog.json"
 
     artifacts_dir: Path = data_dir / "artifacts"
 
     normalized_catalog_path: Path = artifacts_dir / "normalized_catalog.json"
     embedding_documents_path: Path = artifacts_dir / "embedding_documents.json"
     synonym_index_path: Path = artifacts_dir / "synonym_index.json"
-
     faiss_index_path: Path = artifacts_dir / "faiss.index"
-
-
 
     max_recommendations: int = 5
     faiss_top_k: int = 20
