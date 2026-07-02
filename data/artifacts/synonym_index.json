@@ -1,0 +1,28 @@
+{
+  "cognitive": [
+    "cognitive"
+  ],
+  "skill": [
+    "skill"
+  ],
+  "personality": [
+    "personality"
+  ],
+  "situational_judgment": [
+    "situational-judgment",
+    "situational_judgment",
+    "situational judgment"
+  ],
+  "competency": [
+    "competency"
+  ],
+  "development": [
+    "development"
+  ],
+  "rust": [
+    "systems programming",
+    "linux",
+    "networking",
+    "live coding"
+  ]
+}
