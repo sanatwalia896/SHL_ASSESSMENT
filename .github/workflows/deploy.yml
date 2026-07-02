@@ -34,21 +34,25 @@ jobs:
 
       - name: Build Docker image
         run: |
+          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}"
           docker build \
-            --tag ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            --tag ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest \
+            --tag "$IMAGE_URI:${{ github.sha }}" \
+            --tag "$IMAGE_URI:latest" \
             .
 
       - name: Push Docker image
         run: |
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-          docker push ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:latest
+          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}"
+          docker push "$IMAGE_URI:${{ github.sha }}"
+          docker push "$IMAGE_URI:latest"
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy ${{ env.SERVICE }} \
-            --image ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }} \
-            --region ${{ env.REGION }} \
+          IMAGE_URI="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPO_NAME }}/${{ env.IMAGE_NAME }}"
+
+          gcloud run deploy "${{ env.SERVICE }}" \
+            --image "$IMAGE_URI:${{ github.sha }}" \
+            --region "${{ env.REGION }}" \
             --platform managed \
             --allow-unauthenticated \
             --min-instances 0 \
@@ -57,4 +61,10 @@ jobs:
             --cpu 1 \
             --port 8080 \
             --timeout 300 \
-            --set-env-vars GROQ_API_KEY=${{ secrets.GROQ_API_KEY }},GROQ_MODEL=${{
+            --set-env-vars "GROQ_API_KEY=${{ secrets.GROQ_API_KEY }},GROQ_MODEL=${{ secrets.GROQ_MODEL }},FASTEMBED_CACHE_DIR=/app/fastembed_cache"
+
+      - name: Show deployed URL
+        run: |
+          gcloud run services describe "${{ env.SERVICE }}" \
+            --region "${{ env.REGION }}" \
+            --format "value(status.url)"
